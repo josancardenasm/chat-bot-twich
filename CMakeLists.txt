@@ -4,7 +4,7 @@ project(chat-bot-twich VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick WebSockets NetworkAuth)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Quick WebSockets)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -33,7 +33,7 @@ set_target_properties(appchat-bot-twich PROPERTIES
 )
 
 target_link_libraries(appchat-bot-twich
-    PRIVATE Qt6::Quick Qt6::WebSockets Qt6::NetworkAuth
+    PRIVATE Qt6::Quick Qt6::WebSockets
 )
 
 include(GNUInstallDirs)

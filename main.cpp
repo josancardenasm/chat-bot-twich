@@ -4,6 +4,7 @@
 #include <QQmlContext>
 #include <chatbot.h>
 #include <twichircclient.h>
+#include <twichapi.h>
 
 int main(int argc, char *argv[])
 {
@@ -18,8 +19,11 @@ int main(int argc, char *argv[])
     Chatbot chatbot;
     engine.rootContext()->setContextProperty("chatbot", &chatbot);
 
-    TwichIRCClient irc;
-    irc.connect(QUrl("wss://irc-ws.chat.twitch.tv:443"));
+    TwichAPI twichapi;
+    engine.rootContext()->setContextProperty("twichapi", &twichapi);
+
+    // TwichIRCClient irc;
+    // irc.connect(QUrl("wss://irc-ws.chat.twitch.tv:443"));
 
 
     /*

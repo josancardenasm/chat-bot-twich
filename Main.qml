@@ -1,22 +1,36 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
-ApplicationWindow {
+
+Window {
     visible: true
     width: 400
     height: 300
     title: qsTr("Chat Bot Twich")
-    color: "indigo"
 
+    Item {
+        id: loginScreen
+        width: parent.width
+        height: parent.height
 
-    BusyIndicator {
-        visible: true//!spotifyApi.isAuthenticated
-        anchors.centerIn: parent
+        Button {
+            text: qsTr("Conectar");
+            anchors.centerIn: parent
+            onClicked:
+            {
+               twichapi.authorize()
+            }
+        }
     }
 
-    TwichAPI {
 
-    }
+    // BusyIndicator {
+    //     visible: true//!spotifyApi.isAuthenticated
+    //     anchors.centerIn: parent
+    // }
+
+
+
 //     ListView {
 //         id: chatList
 //         anchors.fill: parent

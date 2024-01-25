@@ -7,8 +7,6 @@
 #include <QtNetwork>
 #include <QtQml/qqml.h>
 
-#include <QOAuth2AuthorizationCodeFlow>
-
 class TwichAPI : public QObject
 {
     Q_OBJECT
@@ -25,11 +23,11 @@ signals:
     void isAuthenticatedChanged();
 
 public slots:
-    void setCredentials(const QString& clientId, const QString& clientSecret);
+    //void setCredentials(const QString& clientId, const QString& clientSecret);
     void authorize();
 
 private:
-    QOAuth2AuthorizationCodeFlow m_oauth2;
+    // QOAuth2AuthorizationCodeFlow m_oauth2;
     bool m_isAuthenticated;
 };
 
