@@ -1,75 +1,51 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+// Copyright (C) 2021 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
+import QtQuick 6.5
+import QtQuick.Controls 6.5
 
 Window {
+    id: mainWindow
+    width: 1920
+    height: 1080
+
     visible: true
-    width: 400
-    height: 300
-    title: qsTr("Chat Bot Twich")
+    title: "Chat_bot_twich_ui"
 
-    Item {
+    //Screen definitions
+    Component {
         id: loginScreen
-        width: parent.width
-        height: parent.height
+        Screen01 {
+            id: screen01
+            width: mainWindow.width
+            height: mainWindow.height
 
-        Button {
-            text: qsTr("Conectar");
-            anchors.centerIn: parent
-            onClicked:
-            {
-               twichapi.authorize()
+            onButtonClickedSignal: {
+                console.log("Botón en Screen01 pulsado desde el QML principal")
+                stackView.replace(authScreen);
             }
         }
     }
 
+    Component {
+        id: authScreen
+        AuthorizationForm
+        {
+            id: authScreen01
+            width: mainWindow.width
+            height: mainWindow.height
 
-    // BusyIndicator {
-    //     visible: true//!spotifyApi.isAuthenticated
-    //     anchors.centerIn: parent
-    // }
+            //button handlers
+        }
+    }
 
 
+    StackView {
+        id: stackView
+        anchors.fill: parent
+        initialItem: loginScreen.createObject()
+    }
 
-//     ListView {
-//         id: chatList
-//         anchors.fill: parent
-//         model: chatModel
-//         delegate: Item {
-//             width: parent.width
-//             Text {
-//                 text: modelData
-//             }
-//         }
-//     }
 
-//     Row {
-//         spacing: 10
-
-//         TextField {
-//             id: keywordInput
-//             placeholderText: "Palabra clave"
-//         }
-
-//         Button {
-//             text: "Agregar"
-//             onClicked: {
-//                 if (keywordInput.text !== "") {
-//                     chatbot.addKeyword(keywordInput.text)
-//                     keywordInput.text = ""
-//                 }
-//             }
-//         }
-//     }
-
-// //    Chatbot {
-// //        id: chatbot
-// //        onMessageReceived: {
-// //            chatModel.append({ "message": message });
-// //        }
-// //    }
-
-//     ListModel {
-//         id: chatModel
-//     }
 }
+
