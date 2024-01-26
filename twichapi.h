@@ -25,6 +25,7 @@ signals:
 public slots:
     //void setCredentials(const QString& clientId, const QString& clientSecret);
     void authorize();
+    QString generateAuthURL(void);
 
 private:
     // QOAuth2AuthorizationCodeFlow m_oauth2;

@@ -29,6 +29,7 @@ Window {
 
     Component {
         id: authScreen
+
         AuthorizationForm
         {
             id: authScreen01

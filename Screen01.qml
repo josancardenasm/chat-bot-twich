@@ -38,7 +38,7 @@ Rectangle {
         color: "#ffffff"
         text: qsTr("Chat Bot Twich")
         anchors.top: connectButton.bottom
-        font.family: Constants.font.family
+        //font.family: Constants.font.family
         anchors.topMargin: -207
         font.bold: true
         font.pointSize: 33

@@ -13,28 +13,6 @@
 TwichAPI::TwichAPI(QObject *parent) : QObject{parent}, m_isAuthenticated(false)
 {
     qDebug() << "Activando twich" ;
-    // m_oauth2.setAuthorizationUrl(QUrl("https://id.twitch.tv/oauth2/authorize"));
-    // m_oauth2.setAccessTokenUrl(QUrl("https://accounts.spotify.com/api/token"));
-    // m_oauth2.setScope("user-top-read");
-
-    // m_oauth2.setReplyHandler(new QOAuthHttpServerReplyHandler(8000, this));
-    // m_oauth2.setModifyParametersFunction([&](QAbstractOAuth::Stage stage, QMultiMap<QString, QVariant> *parameters) {
-    //     if(stage == QAbstractOAuth::Stage::RequestingAuthorization) {
-    //         parameters->insert("duration", "permanent");
-    //     }
-    // });
-
-    // connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser, &QDesktopServices::openUrl);
-    // connect(&m_oauth2, &QOAuth2AuthorizationCodeFlow::statusChanged, [=](QAbstractOAuth::Status status) {
-    //     if (status == QAbstractOAuth::Status::Granted) {
-    //         setAuthenticated(true);
-    //     } else {
-    //         setAuthenticated(false);
-    //     }
-    // });
-
-    // Construct the authorization URL
-    //QUrl authorizationUrl("https://id.twitch.tv/oauth2/authorize");
 }
 
 void TwichAPI::setAuthenticated(bool isAuthenticated) {
@@ -48,16 +26,9 @@ bool TwichAPI::isAuthenticated() const {
     return m_isAuthenticated;
 }
 
-// void TwichAPI::setCredentials(const QString& clientId, const QString& clientSecret) {
-//     // m_oauth2.setClientIdentifier(clientId);
-//     // m_oauth2.setClientIdentifierSharedKey(clientSecret);
-// }
-
 void TwichAPI::authorize()
 {
     qDebug()<<"Autorizando la aplicacion..";
-
-
 
     // QUrl authorizationUrl("https://id.twitch.tv/oauth2/authorize");
     // QUrlQuery query;
@@ -94,4 +65,16 @@ void TwichAPI::authorize()
     // QDesktopServices::openUrl(authorizationUrl);
 
     // m_oauth2.grant();
+}
+
+QString TwichAPI::generateAuthURL(void)
+{
+    QUrl authorizationUrl("https://id.twitch.tv/oauth2/authorize");
+    QUrlQuery query;
+    query.addQueryItem("client_id", CLIENT_ID);
+    query.addQueryItem("redirect_uri", REDIRECT_URI);
+    query.addQueryItem("response_type", "token");
+    query.addQueryItem("scope", "chat:read");  // Add the required scopes
+    authorizationUrl.setQuery(query);
+    return authorizationUrl.toString();
 }

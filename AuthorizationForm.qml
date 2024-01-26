@@ -9,40 +9,47 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import ChatBotTwich.Twich 1.0
+
 Rectangle {
     id: mainView
     width: 1920
     height: 1080
     color: "#392e5c"
 
+    TwichAPI
+    {
+        id: twichApi
+    }
+
     Rectangle {
         id: authUrl
         x: 250
         y: 250
-        width: copyButton.x - x - 50
+        width: mainView.width - 300 - x - 50
         height: 40
         color: "#ffffff"
 
-        Text {
+        TextField {
             id: text1
-            anchors.centerIn: parent
-            text: qsTr("Auth URL")
+            width: parent.width
+            height: parent.height
+            text: twichApi.generateAuthURL()
             font.pixelSize: 20
+            verticalAlignment: Text.AlignVCenter
         }
     }
 
     Button {
-        id: copyButton
-        x: mainView.width - 300
-        y: authUrl.y
-        text: qsTr("Copiar")
-    }
-
-    Button {
         id: sendButton
-        x: copyButton.x
+        x: mainView.width - 300
         y: authToken.y
         text: qsTr("Enviar")
+
+        onClicked: {
+            busyIndicator.running = true
+            twichApi.connect()
+        }
     }
 
     Rectangle {
@@ -53,11 +60,11 @@ Rectangle {
         height: 40
         color: "#ffffff"
 
-        TextInput {
+        TextField {
             id: textInput
-            x: 10
+            x: 0
             y: 0
-            width: parent.width - 2 * x
+            width: parent.width
             height: parent.height
             text: qsTr("Auth Token")
             font.pixelSize: 20
@@ -82,4 +89,13 @@ Rectangle {
         text: qsTr("Introduce aqui to token de atorización")
         font.pixelSize: 30
     }
+
+    BusyIndicator {
+        id: busyIndicator
+        x: 939
+        y: 728
+        visible: true
+        running: false
+    }
+
 }
