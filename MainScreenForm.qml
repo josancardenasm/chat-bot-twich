@@ -14,6 +14,20 @@ Rectangle {
     height: 1080
     color: "#392e5c"
 
+    Connections {
+        target: twichircclient
+        onConnected: {
+            console.debug("Ey! Que estoy conectado!");
+            connectStatus.color = "green"
+            //stackView.replace(mainScreen);
+        }
+
+        onDisconnected: {
+            console.debug("Ey! Que estoy desconectado!");
+            connectStatus.color = "red"
+        }
+    }
+
     TextField {
         id: keyWordTextField
         x: 100
@@ -207,5 +221,44 @@ Rectangle {
                 }
             }
         }
+    }
+
+    TextField {
+        id: userField
+        x: 550
+        y: addButton.y
+        width: 250
+        height: addButton.height
+        placeholderText: qsTr("User")
+    }
+
+    TextField {
+        id: chatRoom
+        x: 893
+        y: addButton.y
+        width: 350
+        height: addButton.height
+        placeholderText: qsTr("Chatroom")
+    }
+
+    Button {
+        id: connectButton
+        x: 1278
+        y: addButton.y
+        height: addButton.height
+        text: qsTr("Conectar")
+        onClicked:
+        {
+            twichircclient.connect(twichapi.getOauthToken(), userField.text, chatRoom.text)
+        }
+    }
+
+    Rectangle {
+        id: connectStatus
+        x: 1433
+        y: addButton.y
+        width: addButton.height
+        height: width
+        color: "red"
     }
 }

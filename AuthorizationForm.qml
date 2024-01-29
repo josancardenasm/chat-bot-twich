@@ -9,18 +9,11 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
-import ChatBotTwich.Twich 1.0
-
 Rectangle {
     id: mainView
     width: 1920
     height: 1080
     color: "#392e5c"
-
-    TwichAPI
-    {
-        id: twichApi
-    }
 
     Rectangle {
         id: authUrl
@@ -34,7 +27,7 @@ Rectangle {
             id: text1
             width: parent.width
             height: parent.height
-            text: twichApi.generateAuthURL()
+            text: twichapi.generateAuthURL()
             font.pixelSize: 20
             verticalAlignment: Text.AlignVCenter
         }
@@ -47,8 +40,8 @@ Rectangle {
         text: qsTr("Enviar")
 
         onClicked: {
-            busyIndicator.running = true
-            twichApi.connect()
+            twichapi.setOauthToken(textInput.text)
+            buttonSendClicked() //Send the signal
         }
     }
 
@@ -86,16 +79,10 @@ Rectangle {
         x: 724
         y: 478
         color: "white"
-        text: qsTr("Introduce aqui to token de atorización")
+        text: qsTr("Introduce aqui tu token de atorización")
         font.pixelSize: 30
     }
 
-    BusyIndicator {
-        id: busyIndicator
-        x: 939
-        y: 728
-        visible: true
-        running: false
-    }
+    signal buttonSendClicked()
 
 }

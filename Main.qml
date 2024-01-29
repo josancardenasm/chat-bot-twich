@@ -37,9 +37,25 @@ Window {
             height: mainWindow.height
 
             //button handlers
+            onButtonSendClicked:
+            {
+                stackView.replace(mainScreen);
+            }
         }
     }
 
+    Component {
+        id: mainScreen
+
+        MainScreenForm
+        {
+            id: mainScreen01
+            width: mainWindow.width
+            height: mainWindow.height
+
+            //button handlers
+        }
+    }
 
     StackView {
         id: stackView

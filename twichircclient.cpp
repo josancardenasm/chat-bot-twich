@@ -1,7 +1,7 @@
 #include "twichircclient.h"
 #include <QObject>
 
-TwichIRCClient::TwichIRCClient()
+TwichIRCClient::TwichIRCClient() : m_connected(false)
 {
     //Conectar a la señal de mensaje recibido
     QObject::connect(&webSocket, &QWebSocket::textMessageReceived, [&](const QString &message) {
@@ -14,14 +14,25 @@ TwichIRCClient::TwichIRCClient()
         // Autenticarse en el servidor de chat
 
         qDebug() << "Socket conectado!";
-        //        webSocket.sendTextMessage("PASS <oauth_token>");
-        //        webSocket.sendTextMessage("NICK <your_username>");
-        //        webSocket.sendTextMessage("JOIN #<channel_name>");
+        setConnected(true);
+
+        QString webSocketMsg = "PASS oauth:" + oauth_token;
+        qDebug() << "Enviando (" + webSocketMsg + ")";
+        webSocket.sendTextMessage(webSocketMsg.trimmed()); //"PASS <oauth_token>"
+
+        webSocketMsg = "NICK " + username;
+        qDebug() << "Enviando (" + webSocketMsg + ")";
+        webSocket.sendTextMessage(webSocketMsg); //"NICK <your_username>"
+
+        webSocketMsg = "JOIN #" + channel;
+        qDebug() << "Enviando (" + webSocketMsg + ")";
+        webSocket.sendTextMessage(webSocketMsg); //"JOIN #<channel_name>"
     });
 
     // Conectar a la señal de error
     QObject::connect(&webSocket, &QWebSocket::disconnected, [&]() {
         qDebug() << "Socket desconectado!";
+        setConnected(false);
     });
 
     // Conectar a la señal de error
@@ -30,18 +41,46 @@ TwichIRCClient::TwichIRCClient()
     });
 }
 
-//QUrl url("wss://irc-ws.chat.twitch.tv:443");
-bool TwichIRCClient::connect(QUrl url)
+bool TwichIRCClient::isConnected()
 {
-    // Conectar al servidor de chat
-    qDebug("Conectando a twich...");
-    webSocket.open(url);
-    return false;
+    return m_connected;
 }
 
-bool TwichIRCClient::disconnect(void)
+void TwichIRCClient::setConnected(bool isConnected)
+{
+    if (m_connected != isConnected) {
+        m_connected = isConnected;
+        emit connectedChanged();
+        if(m_connected)
+        {
+            emit connected();
+        }
+        else
+        {
+            emit disconnected();
+        }
+    }
+}
+
+//QUrl url("wss://irc-ws.chat.twitch.tv:443");
+void TwichIRCClient::connect(QString token, QString username, QString channel_name)
+{
+    if(m_connected)
+    {
+        qDebug("El servidor ya está conectado a twich...");
+        return;
+    }
+    // Conectar al servidor de chat
+    qDebug("Conectando a twich...");
+    webSocket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
+
+    this->oauth_token = token.trimmed();
+    this->username = username.trimmed();
+    this->channel = channel_name.trimmed();
+}
+
+void TwichIRCClient::disconnect(void)
 {
     qDebug("Desconectando de twich...");
     webSocket.close();
-    return false;
 }

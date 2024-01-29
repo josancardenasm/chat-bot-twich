@@ -19,17 +19,19 @@ public:
     void setAuthenticated(bool isAuthenticated);
     bool isAuthenticated() const;
 
+
 signals:
     void isAuthenticatedChanged();
 
 public slots:
-    //void setCredentials(const QString& clientId, const QString& clientSecret);
     void authorize();
     QString generateAuthURL(void);
+    void setOauthToken(QString auth_token);
+    QString getOauthToken();
 
 private:
-    // QOAuth2AuthorizationCodeFlow m_oauth2;
     bool m_isAuthenticated;
+    QString m_oauth_token;
 };
 
 #endif // TWICHAPI_H

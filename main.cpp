@@ -3,7 +3,7 @@
 
 #include <QQmlContext>
 //#include <chatbot.h>
-//#include <twichircclient.h>
+#include <twichircclient.h>
 #include <twichapi.h>
 
 // #include <athorizationform.h>
@@ -21,10 +21,13 @@ int main(int argc, char *argv[])
     // Chatbot chatbot;
     // engine.rootContext()->setContextProperty("chatbot", &chatbot);
 
-    // TwichAPI twichapi;
-    // engine.rootContext()->setContextProperty("TwichAPI", &twichapi);
+    TwichAPI twichapi;
+    engine.rootContext()->setContextProperty("twichapi", &twichapi);
 
-    qmlRegisterType<TwichAPI>("ChatBotTwich.Twich", 1, 0, "TwichAPI");
+    TwichIRCClient twichircclient;
+    engine.rootContext()->setContextProperty("twichircclient", &twichircclient);
+
+
 
     // AthorizationForm authForm;
     // engine.rootContext()->setContextProperty("AuthorizationForm", &authForm);

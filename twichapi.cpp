@@ -26,6 +26,11 @@ bool TwichAPI::isAuthenticated() const {
     return m_isAuthenticated;
 }
 
+QString TwichAPI::getOauthToken()
+{
+    return m_oauth_token;
+}
+
 void TwichAPI::authorize()
 {
     qDebug()<<"Autorizando la aplicacion..";
@@ -77,4 +82,10 @@ QString TwichAPI::generateAuthURL(void)
     query.addQueryItem("scope", "chat:read");  // Add the required scopes
     authorizationUrl.setQuery(query);
     return authorizationUrl.toString();
+}
+
+void TwichAPI::setOauthToken(QString auth_token)
+{
+    qDebug() << "Guardando token " +  auth_token;
+    m_oauth_token = auth_token;
 }
