@@ -15,6 +15,7 @@ public:
     TwichIRCClient();
     bool isConnected(void);
     void setConnected(bool isConnected);
+    void sendString(QString string);
 
 signals:
     void connectedChanged(void);

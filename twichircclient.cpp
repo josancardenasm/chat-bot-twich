@@ -1,12 +1,45 @@
 #include "twichircclient.h"
 #include <QObject>
 
+
+
+static void onPrivmsgCommand (TwichIRCClient *client, const QString *msg)
+{
+
+}
+
+static void onPingCommand(TwichIRCClient *client, const QString *msg)
+{
+    QString response = "PONG " + msg->sliced(5);
+    qDebug()<< "Processing onPingCommand response=(" << response << ")";
+    client->sendString(response);
+}
+
+static void processCommand (TwichIRCClient *client, const QString *msg)
+{
+    qDebug()<< "Processing command (" << *msg << ")";
+
+    //Parse command
+    if(msg->startsWith("PING"))
+    {
+        onPingCommand(client, msg);
+        return;
+    }
+    else if(msg->contains("PRIVMSG"))
+    {
+        onPrivmsgCommand(client, msg);
+    }
+}
+
 TwichIRCClient::TwichIRCClient() : m_connected(false)
 {
     //Conectar a la señal de mensaje recibido
     QObject::connect(&webSocket, &QWebSocket::textMessageReceived, [&](const QString &message) {
         // Procesar el mensaje del chat aquí
         qDebug() << "Mensaje recibido:" << message;
+
+        processCommand(this, &message);
+
     });
 
     //Conectar a la señal de conexión establecida
@@ -83,4 +116,13 @@ void TwichIRCClient::disconnect(void)
 {
     qDebug("Desconectando de twich...");
     webSocket.close();
+}
+
+void TwichIRCClient::sendString(QString string)
+{
+    if(!m_connected)
+    {
+        return;
+    }
+    webSocket.sendTextMessage(string);
 }
