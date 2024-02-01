@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QtCore>
 #include <QtWebSockets/QWebSocket>
+#include <chatmsg.h>
 
 class TwichIRCClient : public QObject
 {
@@ -21,6 +22,7 @@ signals:
     void connectedChanged(void);
     void connected();
     void disconnected();
+    void newMsgAdded (ChatMsg msg);
 
 public slots:
     void connect(QString token, QString username, QString channel_name);
@@ -32,6 +34,14 @@ private:
     QString username;
     QString channel;
     QWebSocket webSocket;
+    QList<ChatMsg> msgPool;
+    size_t msgMaxPoolSize;
+
+    void addCommand(ChatMsg msg);
+    void processCommand (const QString &msg);
+    void onPingCommand(const QString &msg);
+    void onPrivmsgCommand (const QString &msg);
+
 };
 
 #endif // TWICHIRCCLIENT_H

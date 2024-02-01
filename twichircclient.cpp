@@ -1,44 +1,75 @@
 #include "twichircclient.h"
 #include <QObject>
 
+#define MSG_POOL_SIZE_DEFAULT 5000
 
-
-static void onPrivmsgCommand (TwichIRCClient *client, const QString *msg)
+void TwichIRCClient::onPrivmsgCommand (const QString &msg)
 {
+    //ChatMsg msg
+    //:foo!foo@foo.tmi.twitch.tv PRIVMSG #bar :bleedPurple
+    //"foo" wrote a message. So it's the user
+    //PRIVMSG is the command
+    //msg
 
-}
-
-static void onPingCommand(TwichIRCClient *client, const QString *msg)
-{
-    QString response = "PONG " + msg->sliced(5);
-    qDebug()<< "Processing onPingCommand response=(" << response << ")";
-    client->sendString(response);
-}
-
-static void processCommand (TwichIRCClient *client, const QString *msg)
-{
-    qDebug()<< "Processing command (" << *msg << ")";
-
-    //Parse command
-    if(msg->startsWith("PING"))
-    {
-        onPingCommand(client, msg);
+    static QRegularExpression re(R"(:([^!]*)![^ ]* PRIVMSG #([^ ]*) :([^\r]*))");
+    QRegularExpressionMatch match = re.match(msg);
+    if(!match.hasMatch()){
+        qDebug()<<"PRIVMSG doesn't match with regex";
         return;
     }
-    else if(msg->contains("PRIVMSG"))
+
+    QString matchedUserName = match.captured(1);
+    QString matchedChannelName = match.captured(2);
+    QString matchedMsg = match.captured(3);
+
+    qDebug() << "Captured: User=(" + matchedUserName + "); matchedChannelName=(" + matchedChannelName + "); matchedMsg=(" + matchedMsg + ")";
+
+    ChatMsg decodedMsg = ChatMsg(matchedUserName, matchedMsg);
+    emit newMsgAdded(decodedMsg);
+}
+
+void TwichIRCClient::onPingCommand(const QString &msg)
+{
+    QString response = "PONG " + msg.sliced(5);
+    qDebug()<< "Processing onPingCommand response=(" << response << ")";
+    this->sendString(response);
+}
+
+void TwichIRCClient::addCommand(ChatMsg msg)
+{
+    // if((msgPool.size() + 1) >= msgMaxPoolSize)
+    // {
+    //     msgPool.removeFirst();
+    // }
+
+    // msgPool.append(msg);
+    emit newMsgAdded(msg);
+}
+
+void TwichIRCClient::processCommand (const QString &msg)
+{
+    qDebug()<< "Processing command (" << msg << ")";
+
+    //Parse command
+    if(msg.startsWith("PING"))
     {
-        onPrivmsgCommand(client, msg);
+        onPingCommand(msg);
+        return;
+    }
+    else if(msg.contains("PRIVMSG"))
+    {
+        onPrivmsgCommand(msg);
     }
 }
 
-TwichIRCClient::TwichIRCClient() : m_connected(false)
+TwichIRCClient::TwichIRCClient() : m_connected(false), msgMaxPoolSize(MSG_POOL_SIZE_DEFAULT)
 {
     //Conectar a la señal de mensaje recibido
     QObject::connect(&webSocket, &QWebSocket::textMessageReceived, [&](const QString &message) {
         // Procesar el mensaje del chat aquí
         qDebug() << "Mensaje recibido:" << message;
 
-        processCommand(this, &message);
+        processCommand(message);
 
     });
 

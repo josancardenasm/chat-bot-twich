@@ -9,6 +9,8 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import com.geeking.qmlcomponents 1.0
+
 Rectangle {
     width: 1920
     height: 1080
@@ -134,6 +136,12 @@ Rectangle {
         }
     }
 
+    ChatMsgModel
+    {
+        id: chatMsgModel
+        twichIRCClient: twichircclient
+    }
+
     Rectangle {
         id: rectangle1
         x: filterList.x + filterList.width + 50
@@ -166,62 +174,67 @@ Rectangle {
             }
         }
 
-        ListView {
-            id: chatList
-            x: 0
-            y: 0
-            width: parent.width
-            height: parent.height - chatListToolBar.height
-            model: ListModel {
-                ListElement {
-                    name: "Grey"
-                    colorCode: "grey"
-                }
+        ScrollView {
+            width: parent.width - 10
+            height: parent.height - chatListToolBar.height - 10
 
-                ListElement {
-                    name: "Red"
-                    colorCode: "red"
-                }
-
-                ListElement {
-                    name: "Blue"
-                    colorCode: "blue"
-                }
-
-                ListElement {
-                    name: "Green"
-                    colorCode: "green"
-                }
-            }
-
-            delegate: Item {
+            ListView {
+                id: chatList
                 x: 5
-                width: 80
-                height: 40
+                y: 5
+                width: parent.width - 10
+                height: parent.height - chatListToolBar.height - 10
+                spacing: 5
+                // model: ListModel {
+                //     ListElement {
+                //         name: "Grey"
+                //         colorCode: "grey"
+                //     }
 
-                Row {
-                    id: row2
-                    spacing: 10
+                //     ListElement {
+                //         name: "Red"
+                //         colorCode: "red"
+                //     }
+                // }
+                model: chatMsgModel
 
-                    CheckBox {
-                        id: chatCheckBox
-                    }
+                delegate: Item {
+                    id: delegate
+                    required property var model
+                    x: 0
+                    y: 0
+                    width: parent.width
+                    height: 45
 
                     Rectangle {
-                        width: 40
-                        height: 40
-                        color: colorCode
+                        x: 0
+                        y: 0
+                        opacity: 0.5
+                        color: "grey"
+                        anchors.fill: parent
                     }
 
-                    Text {
-                        text: name
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.bold: true
+                    Row {
+                        id: row2
+                        spacing: 10
+
+                        CheckBox {
+                            id: chatCheckBox
+                        }
+
+                        Text {
+                            text: delegate.model.userName + ": " + delegate.model.msg
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.bold: true
+                        }
                     }
+
+
                 }
             }
         }
     }
+
 
     TextField {
         id: userField

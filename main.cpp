@@ -8,6 +8,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <chatmsgmodel.h>>
 
 void messageHander(QtMsgType type, const QMessageLogContext& context, const QString& message) {
     QString levelText;
@@ -28,9 +29,7 @@ void messageHander(QtMsgType type, const QMessageLogContext& context, const QStr
         levelText = "Fatal";
         break;
     }
-    QString text = QString("[%1] %2")
-                       .arg(levelText)
-                       .arg(message);
+    QString text = QString("[%1] %2").arg(levelText).arg(message);
     QFile file("app.log");
     file.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream textStream(&file);
@@ -57,7 +56,7 @@ int main(int argc, char *argv[])
     TwichIRCClient twichircclient;
     engine.rootContext()->setContextProperty("twichircclient", &twichircclient);
 
-
+    qmlRegisterType<ChatMsgModel>("com.geeking.qmlcomponents", 1, 0, "ChatMsgModel");
 
     // AthorizationForm authForm;
     // engine.rootContext()->setContextProperty("AuthorizationForm", &authForm);

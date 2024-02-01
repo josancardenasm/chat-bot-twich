@@ -19,7 +19,14 @@ qt_add_qml_module(appchat-bot-twich
     SOURCES chatbot.h chatbot.cpp
     SOURCES twichircclient.h twichircclient.cpp
     SOURCES twichapi.h twichapi.cpp
+    SOURCES chatmsg.h chatmsg.cpp
+    SOURCES chatmsgmodel.h chatmsgmodel.cpp
 )
+
+# qt6_add_qml_module(appchat-bot-twich
+#   URI com.geeking.qmlcomponents
+#   VERSION 1.0
+# )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
