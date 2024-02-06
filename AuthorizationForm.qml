@@ -28,6 +28,7 @@ Rectangle {
             width: parent.width
             height: parent.height
             text: twichapi.generateAuthURL()
+            color: "black"
             font.pixelSize: 20
             verticalAlignment: Text.AlignVCenter
         }
@@ -60,6 +61,7 @@ Rectangle {
             width: parent.width
             height: parent.height
             text: qsTr("Auth Token")
+            color: "black"
             font.pixelSize: 20
             verticalAlignment: Text.AlignVCenter
         }

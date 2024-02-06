@@ -8,7 +8,7 @@
 
 #include <QFile>
 #include <QTextStream>
-#include <chatmsgmodel.h>>
+#include <chatmsgmodel.h>
 
 void messageHander(QtMsgType type, const QMessageLogContext& context, const QString& message) {
     QString levelText;
