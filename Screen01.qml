@@ -22,7 +22,7 @@ Rectangle {
         height: 92
         text: qsTr("Conectar")
         anchors.verticalCenter: parent.verticalCenter
-        font.pointSize: 18
+        font.pointSize: 30
         flat: false
         highlighted: false
         checkable: true
@@ -41,7 +41,7 @@ Rectangle {
         //font.family: Constants.font.family
         anchors.topMargin: -207
         font.bold: true
-        font.pointSize: 33
+        font.pointSize: 50
         anchors.horizontalCenterOffset: 0
         anchors.horizontalCenter: parent.horizontalCenter
     }

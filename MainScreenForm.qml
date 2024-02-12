@@ -185,17 +185,6 @@ Rectangle {
                 width: parent.width - 10
                 height: parent.height - chatListToolBar.height - 10
                 spacing: 5
-                // model: ListModel {
-                //     ListElement {
-                //         name: "Grey"
-                //         colorCode: "grey"
-                //     }
-
-                //     ListElement {
-                //         name: "Red"
-                //         colorCode: "red"
-                //     }
-                // }
                 model: chatMsgModel
 
                 delegate: Item {
@@ -204,7 +193,7 @@ Rectangle {
                     x: 0
                     y: 0
                     width: parent.width
-                    height: 45
+                    height: chat_msg_text.height
 
                     Rectangle {
                         x: 0
@@ -223,9 +212,13 @@ Rectangle {
                         }
 
                         Text {
+                            id: chat_msg_text
+                            width: delegate.width - 50
+                            wrapMode: Text.Wrap
                             text: delegate.model.userName + ": " + delegate.model.msg
                             anchors.verticalCenter: parent.verticalCenter
                             font.bold: true
+                            font.pointSize: 25
                         }
                     }
 
