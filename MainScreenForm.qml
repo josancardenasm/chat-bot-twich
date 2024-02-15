@@ -218,7 +218,7 @@ Rectangle {
                             text: delegate.model.userName + ": " + delegate.model.msg
                             anchors.verticalCenter: parent.verticalCenter
                             font.bold: true
-                            font.pointSize: 25
+                            font.pointSize: 18
                         }
                     }
 
@@ -253,9 +253,22 @@ Rectangle {
         y: addButton.y
         height: addButton.height
         text: qsTr("Conectar")
+
+        property bool isConnected: false
         onClicked:
         {
-            twichircclient.connect(twichapi.getOauthToken(), userField.text, chatRoom.text)
+            if(!isConnected)
+            {
+                twichircclient.connect(twichapi.getOauthToken(), userField.text, chatRoom.text);
+                connectButton.text = "Desconectar";
+                isConnected = true;
+            }
+            else
+            {
+                twichircclient.disconnect(twichapi.getOauthToken(), userField.text, chatRoom.text)
+                connectButton.text = "Conectar";
+                isConnected = false;
+            }
         }
     }
 

@@ -30,6 +30,7 @@ public slots:
 
 private:
     bool m_connected;
+    bool m_connectedRequest;
     QString oauth_token;
     QString username;
     QString channel;
@@ -41,6 +42,7 @@ private:
     void processCommand (const QString &msg);
     void onPingCommand(const QString &msg);
     void onPrivmsgCommand (const QString &msg);
+    void reconnect(void);
 
 };
 

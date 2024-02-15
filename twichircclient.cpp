@@ -62,7 +62,7 @@ void TwichIRCClient::processCommand (const QString &msg)
     }
 }
 
-TwichIRCClient::TwichIRCClient() : m_connected(false), msgMaxPoolSize(MSG_POOL_SIZE_DEFAULT)
+TwichIRCClient::TwichIRCClient() : m_connected(false), m_connectedRequest(false), msgMaxPoolSize(MSG_POOL_SIZE_DEFAULT)
 {
     //Conectar a la señal de mensaje recibido
     QObject::connect(&webSocket, &QWebSocket::textMessageReceived, [&](const QString &message) {
@@ -97,12 +97,26 @@ TwichIRCClient::TwichIRCClient() : m_connected(false), msgMaxPoolSize(MSG_POOL_S
     QObject::connect(&webSocket, &QWebSocket::disconnected, [&]() {
         qDebug() << "Socket desconectado!";
         setConnected(false);
+
+        if(m_connectedRequest == true)
+        {
+            qDebug() << "Intentando volver a conectar...";
+            this->reconnect();
+        }
     });
 
     // Conectar a la señal de error
     QObject::connect(&webSocket, &QWebSocket::errorOccurred, [&](QAbstractSocket::SocketError error) {
         qDebug() << "Error de conexión:" << error;
     });
+}
+
+void TwichIRCClient::reconnect(void)
+{
+    if(m_connected)
+        return;
+    
+    this->connect(this->oauth_token, this->username, this->channel);
 }
 
 bool TwichIRCClient::isConnected()
@@ -134,6 +148,7 @@ void TwichIRCClient::connect(QString token, QString username, QString channel_na
         qDebug("El servidor ya está conectado a twich...");
         return;
     }
+    m_connectedRequest = true;
     // Conectar al servidor de chat
     qDebug("Conectando a twich...");
     webSocket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
@@ -145,6 +160,14 @@ void TwichIRCClient::connect(QString token, QString username, QString channel_na
 
 void TwichIRCClient::disconnect(void)
 {
+    if(!m_connected)
+    {
+        qDebug("El servidor ya está desconectado de twich...");
+        return;
+    }
+
+    m_connectedRequest = false;
+
     qDebug("Desconectando de twich...");
     webSocket.close();
 }
