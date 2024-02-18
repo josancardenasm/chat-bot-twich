@@ -160,13 +160,12 @@ void TwichIRCClient::connect(QString token, QString username, QString channel_na
 
 void TwichIRCClient::disconnect(void)
 {
+    m_connectedRequest = false;
     if(!m_connected)
     {
         qDebug("El servidor ya está desconectado de twich...");
         return;
     }
-
-    m_connectedRequest = false;
 
     qDebug("Desconectando de twich...");
     webSocket.close();
