@@ -15,7 +15,7 @@ qt_add_executable(appchat-bot-twich
 qt_add_qml_module(appchat-bot-twich
     URI chat-bot-twich
     VERSION 1.0
-    QML_FILES Main.qml AuthorizationForm.qml MainScreenForm.qml Screen01.qml
+    QML_FILES Main.qml AuthorizationForm.qml MainScreenForm.qml Screen01.qml ChatMsgItem.qml
     SOURCES chatbot.h chatbot.cpp
     SOURCES twichircclient.h twichircclient.cpp
     SOURCES twichapi.h twichapi.cpp
