@@ -23,6 +23,8 @@ qt_add_qml_module(appchat-bot-twich
     SOURCES chatmsgmodel.h chatmsgmodel.cpp
 )
 
+# QML_IMPORT_PATH()
+
 # qt6_add_qml_module(appchat-bot-twich
 #   URI com.geeking.qmlcomponents
 #   VERSION 1.0

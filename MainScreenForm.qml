@@ -203,40 +203,51 @@ Rectangle {
                 id: rectangle1
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                color: "black"
+                color: "#070707"
 
-                ToolBar {
-                    id: chatListToolBar
-                    x: 0
-                    y: parent.height - height
-                    width: parent.width
-                    height: 50
-                    Row {
-                        id: rowChatToolbar
-                        anchors.fill: parent
+                // ToolBar {
+                //     visible: false
+                //     id: chatListToolBar
+                //     x: 0
+                //     y: parent.height - height
+                //     width: parent.width
+                //     height: 50
+                //     Row {
+                //         id: rowChatToolbar
+                //         anchors.fill: parent
 
-                        CheckBox {
-                            id: chatToolbarCheckBox
-                            text: qsTr("Seleccionar todo")
-                        }
+                //         CheckBox {
+                //             id: chatToolbarCheckBox
+                //             text: qsTr("Seleccionar todo")
+                //         }
 
-                        Button {
-                            id: buttonChatErase
-                            text: qsTr("Borrar")
-                            highlighted: true
-                            flat: false
-                        }
-                    }
-                }
+                //         Button {
+                //             id: buttonChatErase
+                //             text: qsTr("Borrar")
+                //             highlighted: true
+                //             flat: false
+                //         }
+                //     }
+                // }
 
                 ScrollView {
-                    width: parent.width
-                    height: parent.height - chatListToolBar.height
+                    id: chatListScrollView
+                    anchors.fill: parent
+                    //TODO: Scroll Up and Down with keys
+                    // Keys.onUpPressed: scrollBar.decrease()
+                    // Keys.onDownPressed: scrollBar.increase()
+                    ScrollBar.vertical: ScrollBar {
+                        interactive: true
+                        parent: chatListScrollView.parent
+                        anchors.top: chatListScrollView.top
+                        anchors.right: chatListScrollView.right
+                        anchors.bottom: chatListScrollView.bottom
+
+                    }
 
                     ListView {
                         id: chatList
-                        width: parent.width
-                        height: parent.height
+                        anchors.fill: parent
                         spacing: 20
                         // model: chatMsgModel
                         clip: true
@@ -392,46 +403,21 @@ Rectangle {
                             }
                         }
 
-
-                        delegate: Item {
+                        delegate: Item
+                        {
                             id: delegate
-                            required property var model
                             width: chatList.width
-                            height: row2.height
-
-                            Rectangle {
-                                radius: 10
-                                opacity: 0.5
-                                color: "grey"
-                                anchors.fill: parent
-                            }
-
-                            RowLayout {
-                                id: row2
-                                spacing: 10
-                                Layout.topMargin: 5
-                                Layout.bottomMargin: 5
-                                Layout.fillWidth: true
-
-                                // Layout.rightMargin: 10
-
-                                CheckBox {
-                                    Layout.leftMargin: 10
-                                    id: chatCheckBox
-                                }
-
-                                Text {
-                                    id: chat_msg_text
-                                    Layout.rightMargin: 10
-
-                                    width: delegate.width - 50
-                                    wrapMode: Text.Wrap
-                                    text: delegate.model.userName + ": " + delegate.model.msg
-                                    font.pointSize: 15
-                                    color: textWhiteColor
-                                }
+                            height: listItem.height
+                            required property var model
+                            ChatMsgItem {
+                                id:listItem
+                                width: chatList.width - 40
+                                userName: delegate.model.userName
+                                msg: delegate.model.msg
+                                anchors.horizontalCenter: delegate.horizontalCenter // Center the element
                             }
                         }
+
                     }
                 }
             }
