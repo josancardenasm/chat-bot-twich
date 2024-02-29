@@ -7,21 +7,27 @@
 #include <QtWebSockets/QWebSocket>
 #include <chatmsg.h>
 
+
+typedef enum
+{
+    TWIRC_DISCONNECTED,
+    TWIRC_CONNECTING,
+    TWIRC_CONNECTED,
+    TWIRC_DISCONNECTING
+}ConnectedState;
+
 class TwichIRCClient : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool isConnected READ isConnected WRITE setConnected NOTIFY connectedChanged)
+    Q_PROPERTY(ConnectedState connectedState READ connectedState NOTIFY connectedStateChanged)
 
 public:
     TwichIRCClient();
-    bool isConnected(void);
-    void setConnected(bool isConnected);
     void sendString(QString string);
+    ConnectedState connectedState(void);
 
 signals:
-    void connectedChanged(void);
-    void connected();
-    void disconnected();
+    void connectedStateChanged(ConnectedState state);
     void newMsgAdded (ChatMsg msg);
 
 public slots:
@@ -29,15 +35,13 @@ public slots:
     void disconnect(void);
 
 private:
-    bool m_connected;
-    bool m_connectedRequest;
     QString oauth_token;
     QString username;
     QString channel;
-    QWebSocket webSocket;
-    QList<ChatMsg> msgPool;
-    size_t msgMaxPoolSize;
+    ConnectedState m_connectedState;
+    ConnectedState m_connectedStateLast;
 
+    QWebSocket webSocket;
     void addCommand(ChatMsg msg);
     void processCommand (const QString &msg);
     void onPingCommand(const QString &msg);
