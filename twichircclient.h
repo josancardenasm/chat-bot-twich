@@ -7,24 +7,24 @@
 #include <QtWebSockets/QWebSocket>
 #include <chatmsg.h>
 
-
-typedef enum
-{
-    TWIRC_DISCONNECTED,
-    TWIRC_CONNECTING,
-    TWIRC_CONNECTED,
-    TWIRC_DISCONNECTING
-}ConnectedState;
-
 class TwichIRCClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ConnectedState connectedState READ connectedState NOTIFY connectedStateChanged)
 
 public:
+    enum ConnectedState
+    {
+        TWIRC_DISCONNECTED = 0,
+        TWIRC_CONNECTING,
+        TWIRC_CONNECTED,
+        TWIRC_DISCONNECTING
+    };
+
     TwichIRCClient();
     void sendString(QString string);
     ConnectedState connectedState(void);
+    Q_ENUM(ConnectedState)
 
 signals:
     void connectedStateChanged(ConnectedState state);

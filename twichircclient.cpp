@@ -112,7 +112,7 @@ void TwichIRCClient::reconnect(void)
     //this->connect(this->oauth_token, this->username, this->channel);
 }
 
-ConnectedState TwichIRCClient::connectedState(void)
+TwichIRCClient::ConnectedState TwichIRCClient::connectedState(void)
 {
     return m_connectedState;
 }

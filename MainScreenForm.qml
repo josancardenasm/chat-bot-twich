@@ -21,15 +21,34 @@ Rectangle {
 
     Connections {
         target: twichircclient
-        onConnected: {
-            console.debug("Ey! Que estoy conectado!");
-            connectionStatus.color = "green"
-            //stackView.replace(mainScreen);
-        }
+        // onConnected: {
+        //     console.debug("Ey! Que estoy conectado!");
+        //     connectionStatus.color = "green"
+        //     //stackView.replace(mainScreen);
+        // }
 
-        onDisconnected: {
-            console.debug("Ey! Que estoy desconectado!");
-            connectionStatus.color = "red"
+        // onDisconnected: {
+        //     console.debug("Ey! Que estoy desconectado!");
+        //     connectionStatus.color = "red"
+        // }
+        onConnectedStateChanged: (state) => {
+            console.debug("status is " + state);
+
+            if(state === TwichIRCClient.TWIRC_DISCONNECTED)
+            {
+                console.debug("status is disconnected");
+                connectionStatus.color = "red";
+            }
+            else if(state === TwichIRCClient.TWIRC_CONNECTED)
+            {
+                console.debug("status is connected");
+                connectionStatus.color = "green"
+            }
+            else
+            {
+                console.debug("status is connecting or disconnecting: " + state);
+                connectionStatus.color = "orange"
+            }
         }
     }
 
@@ -79,21 +98,21 @@ Rectangle {
                 height: 40
                 text: qsTr("Conectar")
 
-                property bool isConnected: false
+                // property bool isConnected: false
                 onClicked:
                 {
-                    if(!isConnected)
-                    {
+                    // if(!isConnected)
+                    // {
                         twichircclient.connect(twichapi.getOauthToken(), userField.text, chatRoom.text);
-                        connectButton.text = "Desconectar";
-                        isConnected = true;
-                    }
-                    else
-                    {
-                        twichircclient.disconnect(twichapi.getOauthToken(), userField.text, chatRoom.text)
-                        connectButton.text = "Conectar";
-                        isConnected = false;
-                    }
+                        // connectButton.text = "Desconectar";
+                        // isConnected = true;
+                    // }
+                    // else
+                    // {
+                        // twichircclient.disconnect(twichapi.getOauthToken(), userField.text, chatRoom.text)
+                        // connectButton.text = "Conectar";
+                        // isConnected = false;
+                    // }
                 }
             }
 
