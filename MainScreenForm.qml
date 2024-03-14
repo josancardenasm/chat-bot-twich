@@ -18,19 +18,10 @@ Rectangle {
     color: "#0F0F0F"
 
     property color textWhiteColor: "#F0EEF1";
+    property bool isDisconnected: true;
 
     Connections {
         target: twichircclient
-        // onConnected: {
-        //     console.debug("Ey! Que estoy conectado!");
-        //     connectionStatus.color = "green"
-        //     //stackView.replace(mainScreen);
-        // }
-
-        // onDisconnected: {
-        //     console.debug("Ey! Que estoy desconectado!");
-        //     connectionStatus.color = "red"
-        // }
         onConnectedStateChanged: (state) => {
             console.debug("status is " + state);
 
@@ -38,16 +29,22 @@ Rectangle {
             {
                 console.debug("status is disconnected");
                 connectionStatus.color = "red";
+                connectButton.text = "Conectar";
+                isDisconnected = true;
             }
             else if(state === TwichIRCClient.TWIRC_CONNECTED)
             {
                 console.debug("status is connected");
                 connectionStatus.color = "green"
+                connectButton.text = "Desconectar";
+                isDisconnected = false;
             }
             else
             {
                 console.debug("status is connecting or disconnecting: " + state);
                 connectionStatus.color = "orange"
+                connectButton.text = "Desconectar";
+                isDisconnected = false;
             }
         }
     }
@@ -101,18 +98,14 @@ Rectangle {
                 // property bool isConnected: false
                 onClicked:
                 {
-                    // if(!isConnected)
-                    // {
+                    if(isDisconnected === true)
+                    {
                         twichircclient.connect(twichapi.getOauthToken(), userField.text, chatRoom.text);
-                        // connectButton.text = "Desconectar";
-                        // isConnected = true;
-                    // }
-                    // else
-                    // {
-                        // twichircclient.disconnect(twichapi.getOauthToken(), userField.text, chatRoom.text)
-                        // connectButton.text = "Conectar";
-                        // isConnected = false;
-                    // }
+                    }
+                    else
+                    {
+                        twichircclient.disconnect();
+                    }
                 }
             }
 
@@ -268,159 +261,159 @@ Rectangle {
                         id: chatList
                         anchors.fill: parent
                         spacing: 20
-                        // model: chatMsgModel
+                        model: chatMsgModel
                         clip: true
-                        model: ListModel {
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        // model: ListModel {
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                            }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                            ListElement {
-                                userName: "Grey"
-                                msg: "Hola hola que pasa don pepito, hola que pasa don José\n Hola Hols que pasa"
-                            }
-                        }
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José\n Hola Hols que pasa"
+                        //     }
+                        // }
 
                         delegate: Item
                         {

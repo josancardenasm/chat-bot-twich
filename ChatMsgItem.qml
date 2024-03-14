@@ -51,7 +51,7 @@ Item {
                     text: userName + ":"
                     Layout.topMargin: 10
                     Layout.leftMargin: 10
-                    font.pixelSize: 20
+                    font.pixelSize: 15
                     verticalAlignment: Text.AlignVCenter
                     font.styleName: "Semibold"
                     color: "white"
@@ -59,6 +59,7 @@ Item {
                 }
                 CheckBox {
                     id: checkBox
+                    visible: false
                     topPadding: 10
                 }
             }
@@ -66,7 +67,7 @@ Item {
             Text {
                 id: textMsg
                 text: qsTr(msg)
-                font.pixelSize: 18
+                font.pixelSize: 15
                 verticalAlignment: Text.AlignVCenter
                 lineHeightMode: Text.ProportionalHeight
                 wrapMode: Text.Wrap

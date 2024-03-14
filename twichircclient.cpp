@@ -128,15 +128,16 @@ void TwichIRCClient::connect(QString token, QString username, QString channel_na
 
     // Connect to chat server
     qDebug("Connecting to twitch...");
+
+    m_connectedStateLast = m_connectedState;
+    m_connectedState = TWIRC_CONNECTING;
+    emit connectedStateChanged(m_connectedState);
+
     webSocket.open(QUrl("wss://irc-ws.chat.twitch.tv:443"));
 
     this->oauth_token = token.trimmed();
     this->username = username.trimmed();
     this->channel = channel_name.trimmed();
-
-    m_connectedStateLast = m_connectedState;
-    m_connectedState = TWIRC_CONNECTING;
-    emit connectedStateChanged(m_connectedState);
 }
 
 void TwichIRCClient::disconnect(void)
@@ -148,11 +149,12 @@ void TwichIRCClient::disconnect(void)
     }
 
     qDebug("Disconnecting from twitch...");
-    webSocket.close();
 
     m_connectedStateLast = m_connectedState;
     m_connectedState = TWIRC_DISCONNECTING;
     emit connectedStateChanged(m_connectedState);
+
+    webSocket.close();
 }
 
 void TwichIRCClient::sendString(QString string)
