@@ -10,18 +10,24 @@
 class TwichIRCClient : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool isConnected READ isConnected WRITE setConnected NOTIFY connectedChanged)
+    Q_PROPERTY(ConnectedState connectedState READ connectedState NOTIFY connectedStateChanged)
 
 public:
+    enum ConnectedState
+    {
+        TWIRC_DISCONNECTED = 0,
+        TWIRC_CONNECTING,
+        TWIRC_CONNECTED,
+        TWIRC_DISCONNECTING
+    };
+
     TwichIRCClient();
-    bool isConnected(void);
-    void setConnected(bool isConnected);
     void sendString(QString string);
+    ConnectedState connectedState(void);
+    Q_ENUM(ConnectedState)
 
 signals:
-    void connectedChanged(void);
-    void connected();
-    void disconnected();
+    void connectedStateChanged(ConnectedState state);
     void newMsgAdded (ChatMsg msg);
 
 public slots:
@@ -29,18 +35,18 @@ public slots:
     void disconnect(void);
 
 private:
-    bool m_connected;
     QString oauth_token;
     QString username;
     QString channel;
-    QWebSocket webSocket;
-    QList<ChatMsg> msgPool;
-    size_t msgMaxPoolSize;
+    ConnectedState m_connectedState;
+    ConnectedState m_connectedStateLast;
 
+    QWebSocket webSocket;
     void addCommand(ChatMsg msg);
     void processCommand (const QString &msg);
     void onPingCommand(const QString &msg);
     void onPrivmsgCommand (const QString &msg);
+    void reconnect(void);
 
 };
 

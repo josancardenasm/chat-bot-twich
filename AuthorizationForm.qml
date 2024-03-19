@@ -13,7 +13,7 @@ Rectangle {
     id: mainView
     width: 1920
     height: 1080
-    color: "#392e5c"
+    color: "#0F0F0F"
 
     Rectangle {
         id: authUrl

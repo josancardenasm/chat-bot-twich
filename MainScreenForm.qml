@@ -8,130 +8,43 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 */
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts
 
 import com.geeking.qmlcomponents 1.0
 
 Rectangle {
     width: 1920
     height: 1080
-    color: "#392e5c"
+    color: "#0F0F0F"
+
+    property color textWhiteColor: "#F0EEF1";
+    property bool isDisconnected: true;
 
     Connections {
         target: twichircclient
-        onConnected: {
-            console.debug("Ey! Que estoy conectado!");
-            connectStatus.color = "green"
-            //stackView.replace(mainScreen);
-        }
+        onConnectedStateChanged: (state) => {
+            console.debug("status is " + state);
 
-        onDisconnected: {
-            console.debug("Ey! Que estoy desconectado!");
-            connectStatus.color = "red"
-        }
-    }
-
-    TextField {
-        id: keyWordTextField
-        x: 100
-        y: 50
-        placeholderText: qsTr("Palabra clave")
-    }
-
-    Button {
-        id: addButton
-        x: keyWordTextField.x + keyWordTextField.width + 50
-        y: keyWordTextField.y
-        text: qsTr("Agregar...")
-    }
-
-    Rectangle {
-        id: filterList
-        x: keyWordTextField.x
-        y: keyWordTextField.y + keyWordTextField.height + 50
-        width: 400
-        height: parent.height - y - 100
-        color: "#ffffff"
-
-        ToolBar {
-            id: filtersToolBar
-            x: 0
-            y: parent.height - height
-            width: parent.width
-            height: 50
-            Row {
-                id: rowFilterToolbar
-                anchors.fill: parent
-                CheckBox {
-                    id: filtersToolbarCheckBox
-                    text: qsTr("Seleccionar todo")
-                }
-
-                Button {
-                    id: buttonFilterErase
-                    text: qsTr("Borrar")
-                    highlighted: true
-                    flat: false
-                }
-
-                Button {
-                    id: buttonFilter
-                    text: qsTr("Filtrar")
-                    highlighted: true
-                    flat: false
-                }
+            if(state === TwichIRCClient.TWIRC_DISCONNECTED)
+            {
+                console.debug("status is disconnected");
+                connectionStatus.color = "red";
+                connectButton.text = "Conectar";
+                isDisconnected = true;
             }
-        }
-
-        ListView {
-            id: listView
-            x: 0
-            y: 0
-            width: parent.width
-            height: parent.height - filtersToolBar.height
-
-            model: ListModel {
-                ListElement {
-                    name: "Grey"
-                    colorCode: "grey"
-                }
-
-                ListElement {
-                    name: "Red"
-                    colorCode: "red"
-                }
-
-                ListElement {
-                    name: "Blue"
-                    colorCode: "blue"
-                }
-
-                ListElement {
-                    name: "Green"
-                    colorCode: "green"
-                }
+            else if(state === TwichIRCClient.TWIRC_CONNECTED)
+            {
+                console.debug("status is connected");
+                connectionStatus.color = "green"
+                connectButton.text = "Desconectar";
+                isDisconnected = false;
             }
-            delegate: Item {
-                x: 5
-                width: 80
-                height: 40
-                Row {
-                    id: row1
-                    spacing: 10
-                    CheckBox {
-                        id: filtersCheckBox
-                    }
-                    Rectangle {
-                        width: 40
-                        height: 40
-                        color: colorCode
-                    }
-
-                    Text {
-                        text: name
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.bold: true
-                    }
-                }
+            else
+            {
+                console.debug("status is connecting or disconnecting: " + state);
+                connectionStatus.color = "orange"
+                connectButton.text = "Desconectar";
+                isDisconnected = false;
             }
         }
     }
@@ -142,129 +55,384 @@ Rectangle {
         twichIRCClient: twichircclient
     }
 
-    Rectangle {
-        id: rectangle1
-        x: filterList.x + filterList.width + 50
-        y: filterList.y
-        width: parent.width - x - 100
-        height: filterList.height
-        color: "#ffffff"
+    ColumnLayout
+    {
+        id: mainLayout
+        spacing: 0
+        anchors.fill: parent
+        RowLayout
+        {
+            id: buttonsLayout
+            spacing: 5
+            Layout.leftMargin: 10
+            Layout.bottomMargin: 5
+            Layout.topMargin: 5
 
-        ToolBar {
-            id: chatListToolBar
-            x: 0
-            y: parent.height - height
-            width: parent.width
-            height: 50
-            Row {
-                id: rowChatToolbar
-                anchors.fill: parent
+            Rectangle {
+                id: connectionStatus
+                width: 20
+                height: width
+                radius: width
+                color: "red"
+            }
 
-                CheckBox {
-                    id: chatToolbarCheckBox
-                    text: qsTr("Seleccionar todo")
-                }
+            TextField {
+                id: userField
+                width: 350
+                height: 40
+                placeholderText: qsTr("User")
+            }
 
-                Button {
-                    id: buttonChatErase
-                    text: qsTr("Borrar")
-                    highlighted: true
-                    flat: false
+            TextField {
+                id: chatRoom
+                width: 350
+                height: 40
+                placeholderText: qsTr("Chatroom")
+            }
+
+            Button {
+                id: connectButton
+                height: 40
+                text: qsTr("Conectar")
+
+                // property bool isConnected: false
+                onClicked:
+                {
+                    if(isDisconnected === true)
+                    {
+                        twichircclient.connect(twichapi.getOauthToken(), userField.text, chatRoom.text);
+                    }
+                    else
+                    {
+                        twichircclient.disconnect();
+                    }
                 }
             }
+
         }
 
-        ScrollView {
-            width: parent.width - 10
-            height: parent.height - chatListToolBar.height - 10
+        RowLayout
+        {
+            id: screensLayout
+            spacing: 5
+            Layout.leftMargin: 10
+            Layout.bottomMargin: 5
+            Layout.topMargin: 5
+            Layout.rightMargin: 10
 
-            ListView {
-                id: chatList
-                x: 5
-                y: 5
-                width: parent.width - 10
-                height: parent.height - chatListToolBar.height - 10
-                spacing: 5
-                model: chatMsgModel
+            Rectangle {
+                visible: false
+                id: filterList
+                Layout.preferredWidth: 400
+                Layout.fillHeight: true
+                color: "black"
 
-                delegate: Item {
-                    id: delegate
-                    required property var model
+                ToolBar {
+                    id: filtersToolBar
+                    x: 0
+                    y: parent.height - height
+                    width: parent.width
+                    height: 50
+                    Row {
+                        id: rowFilterToolbar
+                        anchors.fill: parent
+                        CheckBox {
+                            id: filtersToolbarCheckBox
+                            text: qsTr("Seleccionar todo")
+                        }
+
+                        Button {
+                            id: buttonFilterErase
+                            text: qsTr("Borrar")
+                            highlighted: true
+                            flat: false
+                        }
+
+                        Button {
+                            id: buttonFilter
+                            text: qsTr("Filtrar")
+                            highlighted: true
+                            flat: false
+                        }
+                    }
+                }
+
+                ListView {
+                    id: listView
                     x: 0
                     y: 0
                     width: parent.width
-                    height: chat_msg_text.height
+                    height: parent.height - filtersToolBar.height
 
-                    Rectangle {
-                        x: 0
-                        y: 0
-                        opacity: 0.5
-                        color: "grey"
+                    model: ListModel {
+                        ListElement {
+                            name: "Grey"
+                            colorCode: "grey"
+                        }
+
+                        ListElement {
+                            name: "Red"
+                            colorCode: "red"
+                        }
+
+                        ListElement {
+                            name: "Blue"
+                            colorCode: "blue"
+                        }
+
+                        ListElement {
+                            name: "Green"
+                            colorCode: "green"
+                        }
+                    }
+                    delegate: Item {
+                        x: 5
+                        width: 80
+                        height: 40
+                        Row {
+                            id: row1
+                            spacing: 10
+                            CheckBox {
+                                id: filtersCheckBox
+                            }
+                            Rectangle {
+                                width: 40
+                                height: 40
+                                color: colorCode
+                            }
+
+                            Text {
+                                text: name
+                                anchors.verticalCenter: parent.verticalCenter
+                                font.bold: true
+                            }
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                id: rectangle1
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                color: "#070707"
+
+                // ToolBar {
+                //     visible: false
+                //     id: chatListToolBar
+                //     x: 0
+                //     y: parent.height - height
+                //     width: parent.width
+                //     height: 50
+                //     Row {
+                //         id: rowChatToolbar
+                //         anchors.fill: parent
+
+                //         CheckBox {
+                //             id: chatToolbarCheckBox
+                //             text: qsTr("Seleccionar todo")
+                //         }
+
+                //         Button {
+                //             id: buttonChatErase
+                //             text: qsTr("Borrar")
+                //             highlighted: true
+                //             flat: false
+                //         }
+                //     }
+                // }
+
+                ScrollView {
+                    id: chatListScrollView
+                    anchors.fill: parent
+                    //TODO: Scroll Up and Down with keys
+                    // Keys.onUpPressed: scrollBar.decrease()
+                    // Keys.onDownPressed: scrollBar.increase()
+                    ScrollBar.vertical: ScrollBar {
+                        interactive: true
+                        parent: chatListScrollView.parent
+                        anchors.top: chatListScrollView.top
+                        anchors.right: chatListScrollView.right
+                        anchors.bottom: chatListScrollView.bottom
+
+                    }
+
+                    ListView {
+                        id: chatList
                         anchors.fill: parent
-                    }
+                        spacing: 20
+                        model: chatMsgModel
+                        clip: true
+                        // model: ListModel {
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                    Row {
-                        id: row2
-                        spacing: 10
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
 
-                        CheckBox {
-                            id: chatCheckBox
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
+                        //     }
+
+                        //     ListElement {
+                        //         userName: "Grey"
+                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José\n Hola Hols que pasa"
+                        //     }
+                        // }
+
+                        delegate: Item
+                        {
+                            id: delegate
+                            width: chatList.width
+                            height: listItem.height
+                            required property var model
+                            ChatMsgItem {
+                                id:listItem
+                                width: chatList.width - 40
+                                userName: delegate.model.userName
+                                msg: delegate.model.msg
+                                anchors.horizontalCenter: delegate.horizontalCenter // Center the element
+                            }
                         }
 
-                        Text {
-                            id: chat_msg_text
-                            width: delegate.width - 50
-                            wrapMode: Text.Wrap
-                            text: delegate.model.userName + ": " + delegate.model.msg
-                            anchors.verticalCenter: parent.verticalCenter
-                            font.bold: true
-                            font.pointSize: 25
-                        }
                     }
-
-
                 }
             }
         }
-    }
-
-
-    TextField {
-        id: userField
-        x: 550
-        y: addButton.y
-        width: 250
-        height: addButton.height
-        placeholderText: qsTr("User")
-    }
-
-    TextField {
-        id: chatRoom
-        x: 893
-        y: addButton.y
-        width: 350
-        height: addButton.height
-        placeholderText: qsTr("Chatroom")
-    }
-
-    Button {
-        id: connectButton
-        x: 1278
-        y: addButton.y
-        height: addButton.height
-        text: qsTr("Conectar")
-        onClicked:
-        {
-            twichircclient.connect(twichapi.getOauthToken(), userField.text, chatRoom.text)
-        }
-    }
-
-    Rectangle {
-        id: connectStatus
-        x: 1433
-        y: addButton.y
-        width: addButton.height
-        height: width
-        color: "red"
     }
 }

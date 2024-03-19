@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("twichircclient", &twichircclient);
 
     qmlRegisterType<ChatMsgModel>("com.geeking.qmlcomponents", 1, 0, "ChatMsgModel");
+    qmlRegisterType<TwichIRCClient>("com.geeking.qmlcomponents", 1, 0, "TwichIRCClient");
 
     // AthorizationForm authForm;
     // engine.rootContext()->setContextProperty("AuthorizationForm", &authForm);
