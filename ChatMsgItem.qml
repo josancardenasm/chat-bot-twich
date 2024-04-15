@@ -57,6 +57,28 @@ Item {
                     color: "white"
                     Layout.fillWidth: true
                 }
+                Rectangle
+                {
+                    id: deleteButton
+                    color: "red"
+                    Layout.topMargin: 5
+                    height: 28
+                    width: 28
+
+                    MouseArea {
+                        id: mouseArea
+                        anchors.fill: parent
+                        onPressed:
+                        {
+                            parent.color = "blue"
+                        }
+                        onReleased:
+                        {
+                            parent.color = "red"
+                        }
+                    }
+
+                }
                 CheckBox {
                     id: checkBox
                     visible: false

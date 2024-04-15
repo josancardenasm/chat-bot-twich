@@ -21,6 +21,8 @@ qt_add_qml_module(appchat-bot-twich
     SOURCES twichapi.h twichapi.cpp
     SOURCES chatmsg.h chatmsg.cpp
     SOURCES chatmsgmodel.h chatmsgmodel.cpp
+    SOURCES chatmsgdatasource.h chatmsgdatasource.cpp
+    SOURCES filterdatasource.h filterdatasource.cpp
 )
 
 # QML_IMPORT_PATH()

@@ -1,79 +1,25 @@
 #include "chatmsgmodel.h"
 #include <QObject>
 
-ChatMsgModel::ChatMsgModel(QObject *parent) : QAbstractListModel{parent}, m_ircClient(NULL)
+ChatMsgModel::ChatMsgModel(QObject *parent) : QAbstractListModel{parent}, m_msgDataSource(NULL), m_signalConnected(false)
 {
-    qDebug()<<"ChatMsgModel constructor...";
-}
-
-void ChatMsgModel::removeMsg(size_t index)
-{
-    if(index >= m_msgList.size())
-    {
-        qDebug() << "removeMsg index is not in range";
-        return;
-    }
-
-    m_msgList.remove(index);
-}
-
-void ChatMsgModel::addMsg(ChatMsg msg)
-{
-    qDebug()<<"ChatMsgModel: Received msg from " + msg.getUser() + " with content " + msg.getMsg();
-    m_msgList.append(msg);
-}
-
-void ChatMsgModel::setIrcClient(TwichIRCClient *newIrcClient)
-{
-    qDebug()<<"ChatMsgModel::setIrcClient";
-    if (m_ircClient != newIrcClient) {
-
-        //QMetaObject::Connection connection = QObject::connect(newIrcClient, SIGNAL(newMsgAdded), this, SLOT(addMsg));
-        QMetaObject::Connection connection = QObject::connect(newIrcClient, &TwichIRCClient::newMsgAdded, [&](ChatMsg msg) {
-            qDebug()<<"ChatMsgModel: Received msg from " + msg.getUser() + " with content " + msg.getMsg();
-
-            //Hack
-            if(!msg.getMsg().toLower().contains("!pregunta"))
-                return;
-            //End Hack
-
-            int numRows = m_msgList.size();
-            beginInsertRows(QModelIndex(), numRows, numRows);
-            m_msgList.append(msg);
-            endInsertRows();
-            //TODO: myListView->scrollTo(newIndex);
-        });
-
-        if(!connection)
-            return;
-
-        if(m_ircClient)
-            QObject::disconnect(this->m_newMsgConnection);
-
-        this->m_newMsgConnection = connection;
-        m_ircClient = newIrcClient;
-        emit twichIRCClientChanged();
-    }
-}
-
-TwichIRCClient *ChatMsgModel::twichIRCClient() const
-{
-    return m_ircClient;
+    qDebug()<<"ChatMsgModel constructor";
+    setchatMsgDataSource( new ChatMsgDataSource(this));
 }
 
 QHash<int, QByteArray> ChatMsgModel::roleNames() const
 {
-    static const QHash<int, QByteArray> names {
+    static const QHash<int, QByteArray> roles {
         { UserNameRole, "userName" },
         { MsgRole, "msg" },
         };
-    return names;
+    return roles;
 }
 
 int ChatMsgModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_msgList.size();
+    return m_msgDataSource->dataItems().size();
 }
 
 int ChatMsgModel::columnCount(const QModelIndex &parent) const
@@ -84,21 +30,56 @@ int ChatMsgModel::columnCount(const QModelIndex &parent) const
 
 QVariant ChatMsgModel::data(const QModelIndex &index, int role) const
 {
-    Q_UNUSED(role);
-
     if (!index.isValid())
         return QVariant();
 
-    if (role == Qt::DisplayRole || role == UserNameRole) {
-        return m_msgList.at(index.row()).getUser();
-    }
+    ChatMsg *msg = m_msgDataSource->dataItems().at(index.row())
 
-    if (role == MsgRole) {
-        return m_msgList.at(index.row()).getMsg();
-    }
+    if (role == Qt::DisplayRole || role == UserNameRole)
+        return msg->getUser();
+    if (role == MsgRole)
+        return msg->getMsg();
 
     return QVariant();
 }
+
+ChatMsgDataSource* ChatMsgModel::chatMsgDataSource(void) const
+{
+    return m_msgDataSource;
+}
+
+void ChatMsgModel::setChatMsgDataSource(ChatMsgDataSource *newMsgDataSource)
+{
+    beginResetModel();
+
+    if( m_msgDataSource && m_signalConnected)
+        m_msgDataSource->disconnect(this);
+
+    m_msgDataSource = newMsgDataSource;
+
+    connect(m_msgDataSource,&ChatMsgDataSource::preMsgAdded,this,[=](){
+        const int index = newMsgDataSource->dataItems().size();
+        beginInsertRows(QModelIndex(),index,index);
+    });
+
+    connect(m_msgDataSource,&ChatMsgDataSource::postMsgAdded,this,[=](){
+        endInsertRows();
+    });
+
+    connect(m_msgDataSource,&ChatMsgDataSource::preMsgRemoved,this,[=](int index){
+       beginRemoveRows(QModelIndex(), index, index);
+    });
+
+    connect(m_msgDataSource,&ChatMsgDataSource::postMsgRemoved,this,[=](){
+       endRemoveRows();
+    });
+
+    m_signalConnected = true;
+
+    endResetModel();
+}
+
+
 
 
 
