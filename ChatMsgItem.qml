@@ -68,10 +68,13 @@ Item {
                     Layout.topMargin: 5
                     height: 28
                     width: 28
-
-                    MouseArea {
-                        id: mouseArea
+                    Image {
+                        id: deleteButtonImg
+                        source: "resources/icon_trash.svg"
                         anchors.fill: parent
+                    }
+                    MouseArea{
+                        id: removeButtonMA
                         onPressed:
                         {
                             parent.color = "blue"
@@ -85,10 +88,10 @@ Item {
                             chatMsgItem.removeButtonClicked(itemIndex);
                         }
                     }
-
                 }
                 CheckBox {
                     id: checkBox
+                    visible: false
                     topPadding: 10
                 }
             }
