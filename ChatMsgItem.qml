@@ -64,28 +64,30 @@ Item {
                 Rectangle
                 {
                     id: deleteButton
-                    color: "red"
+                    color: rectangle.color
                     Layout.topMargin: 5
-                    height: 28
-                    width: 28
+                    height: 16
+                    width: 16
                     Image {
                         id: deleteButtonImg
                         source: "resources/icon_trash.svg"
                         anchors.fill: parent
-                    }
-                    MouseArea{
-                        id: removeButtonMA
-                        onPressed:
-                        {
-                            parent.color = "blue"
-                        }
-                        onReleased:
-                        {
-                            parent.color = "red"
-                        }
-                        onClicked:
-                        {
-                            chatMsgItem.removeButtonClicked(itemIndex);
+
+                        MouseArea{
+                            id: removeButtonMA
+                            anchors.fill: parent
+                            onPressed:
+                            {
+                                deleteButton.color = "grey"
+                            }
+                            onReleased:
+                            {
+                                deleteButton.color = rectangle
+                            }
+                            onClicked:
+                            {
+                                chatMsgItem.removeButtonClicked(itemIndex);
+                            }
                         }
                     }
                 }

@@ -23,6 +23,7 @@ qt_add_qml_module(appchat-bot-twich
     SOURCES chatmsgmodel.h chatmsgmodel.cpp
     SOURCES chatmsgdatasource.h chatmsgdatasource.cpp
     SOURCES filterdatasource.h filterdatasource.cpp
+    RESOURCES resources/icon_trash.svg
 )
 
 # QML_IMPORT_PATH()
