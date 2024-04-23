@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <chatmsgmodel.h>
+#include <chatmsgdatasource.h>
 
 void messageHander(QtMsgType type, const QMessageLogContext& context, const QString& message) {
     QString levelText;
@@ -57,6 +58,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("twichircclient", &twichircclient);
 
     qmlRegisterType<ChatMsgModel>("com.geeking.qmlcomponents", 1, 0, "ChatMsgModel");
+    qmlRegisterType<ChatMsgDataSource>("com.geeking.qmlcomponents", 1, 0, "ChatMsgDataSource");
     qmlRegisterType<TwichIRCClient>("com.geeking.qmlcomponents", 1, 0, "TwichIRCClient");
 
     // AthorizationForm authForm;

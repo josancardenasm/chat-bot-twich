@@ -3,10 +3,14 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts
 
 Item {
+    id: chatMsgItem
     width: 1000
     height: mainLayout.height
     property string userName: "UserName"
     property string msg: "Text message"
+    property int itemIndex: -1
+
+    signal removeButtonClicked(int idx)
 
     Rectangle {
         radius: 25
@@ -56,6 +60,36 @@ Item {
                     font.styleName: "Semibold"
                     color: "white"
                     Layout.fillWidth: true
+                }
+                Rectangle
+                {
+                    id: deleteButton
+                    color: rectangle.color
+                    Layout.topMargin: 5
+                    height: 16
+                    width: 16
+                    Image {
+                        id: deleteButtonImg
+                        source: "resources/icon_trash.svg"
+                        anchors.fill: parent
+
+                        MouseArea{
+                            id: removeButtonMA
+                            anchors.fill: parent
+                            onPressed:
+                            {
+                                deleteButton.color = "grey"
+                            }
+                            onReleased:
+                            {
+                                deleteButton.color = rectangle
+                            }
+                            onClicked:
+                            {
+                                chatMsgItem.removeButtonClicked(itemIndex);
+                            }
+                        }
+                    }
                 }
                 CheckBox {
                     id: checkBox

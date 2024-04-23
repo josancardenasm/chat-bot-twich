@@ -49,12 +49,6 @@ Rectangle {
         }
     }
 
-    ChatMsgModel
-    {
-        id: chatMsgModel
-        twichIRCClient: twichircclient
-    }
-
     ColumnLayout
     {
         id: mainLayout
@@ -261,172 +255,33 @@ Rectangle {
                         id: chatList
                         anchors.fill: parent
                         spacing: 20
-                        model: chatMsgModel
+                        model: ChatMsgModel{
+                            chatMsgDataSource: ChatMsgDataSource
+                            {
+                                id: chatMsgDataSource
+                                twichIRCClient: twichircclient
+                            }
+                        }
                         clip: true
-                        // model: ListModel {
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José"
-                        //     }
-
-                        //     ListElement {
-                        //         userName: "Grey"
-                        //         msg: "Hola hola que pasa don pepito, hola que pasa don José\n Hola Hols que pasa"
-                        //     }
-                        // }
-
                         delegate: Item
                         {
                             id: delegate
                             width: chatList.width
                             height: listItem.height
                             required property var model
+                            required property var index
                             ChatMsgItem {
                                 id:listItem
                                 width: chatList.width - 40
                                 userName: delegate.model.userName
                                 msg: delegate.model.msg
+                                itemIndex: index
                                 anchors.horizontalCenter: delegate.horizontalCenter // Center the element
+                                onRemoveButtonClicked:
+                                {
+                                    console.debug("Remove element " + index);
+                                    chatMsgDataSource.removeMsg(index);
+                                }
                             }
                         }
 
