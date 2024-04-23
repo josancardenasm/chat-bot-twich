@@ -5,6 +5,7 @@
 #include <chatmsg.h>
 #include <filterdatasource.h>
 #include <twichircclient.h>
+#include <QSharedPointer>
 
 class ChatMsgDataSource : public QObject
 {
@@ -12,8 +13,10 @@ class ChatMsgDataSource : public QObject
     Q_PROPERTY(TwichIRCClient* twichIRCClient READ twichIRCClient WRITE setTwichIRCClient NOTIFY twichIRCClientChanged)
 public:
     explicit ChatMsgDataSource(QObject *parent = nullptr);
-    QList<ChatMsg *> dataItems();
-    void addMsg( ChatMsg *msg);
+    QList<QSharedPointer<ChatMsg>> dataItems();
+    void addMsg(ChatMsg msg);
+    void addMsg(ChatMsg *msg);
+    void addMsg(QSharedPointer<ChatMsg> msg);
     Q_INVOKABLE void removeMsg(int index);
     void setTwichIRCClient(TwichIRCClient *newIrcClient);
     TwichIRCClient* twichIRCClient(void) const;
@@ -26,9 +29,9 @@ signals:
     void twichIRCClientChanged();
 
 private:
-    QList<ChatMsg *> m_msgList;
+    QList<QSharedPointer<ChatMsg>> m_msgList;
     FilterDataSource *m_filters;
-    QPointer<TwichIRCClient> m_ircClient;
+    QPointer<TwichIRCClient> m_twitchIRCClient;
     QMetaObject::Connection m_newMsgConnection;
 };
 

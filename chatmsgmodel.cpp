@@ -4,7 +4,6 @@
 ChatMsgModel::ChatMsgModel(QObject *parent) : QAbstractListModel{parent}, m_msgDataSource(NULL), m_signalConnected(false)
 {
     qDebug()<<"ChatMsgModel constructor";
-    setchatMsgDataSource( new ChatMsgDataSource(this));
 }
 
 QHash<int, QByteArray> ChatMsgModel::roleNames() const
@@ -22,18 +21,12 @@ int ChatMsgModel::rowCount(const QModelIndex &parent) const
     return m_msgDataSource->dataItems().size();
 }
 
-int ChatMsgModel::columnCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent);
-    return m_msgList.size() ? 1 : 0;
-}
-
 QVariant ChatMsgModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
 
-    ChatMsg *msg = m_msgDataSource->dataItems().at(index.row())
+    QSharedPointer<ChatMsg> msg = m_msgDataSource->dataItems().at(index.row());
 
     if (role == Qt::DisplayRole || role == UserNameRole)
         return msg->getUser();
@@ -77,6 +70,8 @@ void ChatMsgModel::setChatMsgDataSource(ChatMsgDataSource *newMsgDataSource)
     m_signalConnected = true;
 
     endResetModel();
+
+    emit chatMsgDataSourceChanged();
 }
 
 

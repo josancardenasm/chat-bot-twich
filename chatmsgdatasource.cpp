@@ -3,30 +3,38 @@
 ChatMsgDataSource::ChatMsgDataSource(QObject *parent)
     : QObject{parent}, m_filters(NULL), m_twitchIRCClient(NULL)
 {
-    
-    //setIrcClient(new TwichIRCClient(this));
 }
 
-QList<ChatMsg *> ChatMsgDataSource::dataItems()
+QList<QSharedPointer<ChatMsg>> ChatMsgDataSource::dataItems()
 {
     return m_msgList;
 }
 
-void ChatMsgDataSource::addMsg( ChatMsg *msg)
+void ChatMsgDataSource::addMsg(QSharedPointer<ChatMsg> msg)
 {
-    if(msg == NULL)
-    {
-        qError()<<"ChatMsgDataSource: null msg!"
-        return;
-    }
-        
     qDebug()<<"ChatMsgDataSource: Received msg from " + msg->getUser() + " with content " + msg->getMsg();
     emit preMsgAdded();
     m_msgList.append(msg);
     emit postMsgAdded();
 }
 
-void ChatMsgDataSource::removeMsg(size_t index)
+void ChatMsgDataSource::addMsg(ChatMsg* msg)
+{
+    if(msg == NULL)
+    {
+        qFatal()<<"ChatMsgDataSource: null msg!";
+        return;
+    }
+
+    addMsg(QSharedPointer<ChatMsg>(msg));
+}
+
+void ChatMsgDataSource::addMsg(ChatMsg msg)
+{
+    addMsg(QSharedPointer<ChatMsg>(new ChatMsg(msg)));
+}
+
+void ChatMsgDataSource::removeMsg(int index)
 {
     if(index >= m_msgList.size())
     {
@@ -37,7 +45,6 @@ void ChatMsgDataSource::removeMsg(size_t index)
     emit preMsgRemoved(index);
     m_msgList.remove(index);
     emit postMsgRemoved();
-    //TODO: free???
 }
 
 
@@ -45,8 +52,7 @@ void ChatMsgDataSource::removeMsg(size_t index)
 void ChatMsgDataSource::setTwichIRCClient(TwichIRCClient *newIrcClient)
 {
     qDebug()<<"ChatMsgDataSource::setIrcClient";
-    if (m_ircClient != newIrcClient) {
-        //QMetaObject::Connection connection = QObject::connect(newIrcClient, SIGNAL(newMsgAdded), this, SLOT(addMsg));
+    if (m_twitchIRCClient != newIrcClient) {
         QMetaObject::Connection connection = QObject::connect(newIrcClient, &TwichIRCClient::newMsgAdded, [&](ChatMsg msg) {
             qDebug()<<"ChatMsgDataSource: Received msg from " + msg.getUser() + " with content " + msg.getMsg();
 
@@ -55,24 +61,23 @@ void ChatMsgDataSource::setTwichIRCClient(TwichIRCClient *newIrcClient)
                 return;
             //End Hack
 
-            //TODO:puntero?
             addMsg(msg);
         });
 
         if(!connection)
             return;
 
-        if(m_ircClient)
+        if(m_twitchIRCClient)
             QObject::disconnect(this->m_newMsgConnection);
 
         this->m_newMsgConnection = connection;
-        m_ircClient = newIrcClient;
+        m_twitchIRCClient = newIrcClient;
         emit twichIRCClientChanged();
     }
 }
 
 TwichIRCClient *ChatMsgDataSource::twichIRCClient() const
 {
-    return m_ircClient;
+    return m_twitchIRCClient;
 }
 

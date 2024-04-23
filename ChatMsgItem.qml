@@ -3,10 +3,14 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts
 
 Item {
+    id: chatMsgItem
     width: 1000
     height: mainLayout.height
     property string userName: "UserName"
     property string msg: "Text message"
+    property int itemIndex: -1
+
+    signal removeButtonClicked(int idx)
 
     Rectangle {
         radius: 25
@@ -76,12 +80,15 @@ Item {
                         {
                             parent.color = "red"
                         }
+                        onClicked:
+                        {
+                            chatMsgItem.removeButtonClicked(itemIndex);
+                        }
                     }
 
                 }
                 CheckBox {
                     id: checkBox
-                    visible: false
                     topPadding: 10
                 }
             }
