@@ -37,9 +37,11 @@ void ChatMsgModel::setIrcClient(TwichIRCClient *newIrcClient)
                 return;
             //End Hack
 
-            beginResetModel();
+            int numRows = m_msgList.size();
+            beginInsertRows(QModelIndex(), numRows, numRows);
             m_msgList.append(msg);
-            endResetModel();
+            endInsertRows();
+            //TODO: myListView->scrollTo(newIndex);
         });
 
         if(!connection)
