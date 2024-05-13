@@ -108,8 +108,7 @@ TwichIRCClient::TwichIRCClient() : m_connectedState(TWIRC_DISCONNECTED), m_conne
 
 void TwichIRCClient::reconnect(void)
 {
-    //TODO: Start a timer to reconnect
-    //this->connect(this->oauth_token, this->username, this->channel);
+    this->connect(this->oauth_token, this->username, this->channel);
 }
 
 TwichIRCClient::ConnectedState TwichIRCClient::connectedState(void)
