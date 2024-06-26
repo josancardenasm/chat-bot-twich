@@ -4,7 +4,7 @@ project(chat-bot-twich VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick WebSockets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Quick WebSockets HttpServer)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -24,6 +24,7 @@ qt_add_qml_module(appchat-bot-twich
     SOURCES chatmsgdatasource.h chatmsgdatasource.cpp
     SOURCES filterdatasource.h filterdatasource.cpp
     RESOURCES resources/icon_trash.svg
+    SOURCES chatbotwebserver.h chatbotwebserver.cpp
 )
 
 # QML_IMPORT_PATH()
@@ -48,6 +49,7 @@ target_link_libraries(appchat-bot-twich PRIVATE
     Qt6::Quick
     Qt6::Qml
     Qt6::WebSockets
+    Qt6::HttpServer
 )
 
 include(GNUInstallDirs)
