@@ -15,6 +15,7 @@ qt_add_executable(appchat-bot-twich
 qt_add_qml_module(appchat-bot-twich
     URI chat-bot-twich
     VERSION 1.0
+    RESOURCE_PREFIX /geeking.dev/imports
     QML_FILES Main.qml AuthorizationForm.qml MainScreenForm.qml Screen01.qml ChatMsgItem.qml
     SOURCES chatbot.h chatbot.cpp
     SOURCES twichircclient.h twichircclient.cpp
@@ -25,6 +26,7 @@ qt_add_qml_module(appchat-bot-twich
     SOURCES filterdatasource.h filterdatasource.cpp
     RESOURCES resources/icon_trash.svg
     SOURCES chatbotwebserver.h chatbotwebserver.cpp
+    RESOURCES resources/web/auth/index.html
 )
 
 # QML_IMPORT_PATH()

@@ -10,6 +10,7 @@
 #include <QTextStream>
 #include <chatmsgmodel.h>
 #include <chatmsgdatasource.h>
+#include <chatbotwebserver.h>
 
 void messageHander(QtMsgType type, const QMessageLogContext& context, const QString& message) {
     QString levelText;
@@ -67,6 +68,8 @@ int main(int argc, char *argv[])
     // TwichIRCClient irc;
     // irc.connect(QUrl("wss://irc-ws.chat.twitch.tv:443"));
 
+    ChatBotWebServer web_server;
+    web_server.start();
 
     /*
     End of custom startup
