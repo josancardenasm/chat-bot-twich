@@ -9,7 +9,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS Quick WebSockets HttpServer)
 qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appchat-bot-twich
-    main.cpp
+
 )
 
 qt_add_qml_module(appchat-bot-twich
@@ -27,6 +27,8 @@ qt_add_qml_module(appchat-bot-twich
     RESOURCES resources/icon_trash.svg
     SOURCES chatbotwebserver.h chatbotwebserver.cpp
     RESOURCES resources/web/auth/index.html
+    SOURCES userconf.h userconf.cpp
+    SOURCES
 )
 
 # QML_IMPORT_PATH()

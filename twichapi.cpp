@@ -4,15 +4,14 @@
 #define REDIRECT_URI "http://localhost:3000"
 #define AUTH_URL "https://id.twitch.tv/oauth2/authorize"
 
-// #include <QDesktopServices>
-// #include <QUrl>
-// #include <QUrlQuery>
+#include <userconf.h>
 #include <QDebug>
-//#include <QWebEngineView>
 
 TwichAPI::TwichAPI(QObject *parent) : QObject{parent}, m_isAuthenticated(false)
 {
-    qDebug() << "Activando twich" ;
+    qDebug() << "Activating Twitch..." ;
+    UserConf config;
+    m_oauth_token = config.getAccess_token();
 }
 
 void TwichAPI::setAuthenticated(bool isAuthenticated) {
@@ -34,42 +33,6 @@ QString TwichAPI::getOauthToken()
 void TwichAPI::authorize()
 {
     qDebug()<<"Autorizando la aplicacion..";
-
-    // QUrl authorizationUrl("https://id.twitch.tv/oauth2/authorize");
-    // QUrlQuery query;
-    // query.addQueryItem("client_id", CLIENT_ID);
-    // query.addQueryItem("redirect_uri", REDIRECT_URI);
-    // query.addQueryItem("response_type", "token");
-    // query.addQueryItem("scope", "chat:read");  // Add the required scopes
-    // authorizationUrl.setQuery(query);
-
-    // // Carga la URL de autorización en el navegador
-    // QWebEngineView view;
-
-    // view.load(authorizationUrl);
-
-    // Conecta una función lambda al evento de carga terminada
-    // QObject::connect(&view, &QWebEngineView::urlChanged, [&redirectUrl](const QUrl& url) {
-    //     // Comprueba si la URL contiene la URL de redirección
-    //     if (url.toString().startsWith(redirectUrl.toString())) {
-    //         // Aquí puedes manejar la URL de redirección
-    //         qDebug() << "URL de redirección detectada:" << url.toString();
-    //     }
-    // });
-
-    // view.show();
-
-    // QUrl authorizationUrl("https://id.twitch.tv/oauth2/authorize");
-    // QUrlQuery query;
-    // query.addQueryItem("client_id", CLIENT_ID);
-    // query.addQueryItem("redirect_uri", REDIRECT_URI);
-    // query.addQueryItem("response_type", "token");
-    // query.addQueryItem("scope", "chat:read");  // Add the required scopes
-    // authorizationUrl.setQuery(query);
-
-    // QDesktopServices::openUrl(authorizationUrl);
-
-    // m_oauth2.grant();
 }
 
 QString TwichAPI::generateAuthURL(void)
@@ -86,6 +49,9 @@ QString TwichAPI::generateAuthURL(void)
 
 void TwichAPI::setOauthToken(QString auth_token)
 {
-    qDebug() << "Guardando token " +  auth_token;
+    qDebug() << "Saving access token " +  auth_token;
+    UserConf config;
+    config.setAccess_token(auth_token);
+
     m_oauth_token = auth_token;
 }

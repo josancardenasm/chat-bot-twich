@@ -1,10 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Hello World</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Token Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 20px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:active {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>Welcome to my webpage.</p>
+    <div class="container">
+        <h1>Access Token Viewer</h1>
+        <input type="text" id="accessToken" readonly>
+        <button onclick="copyToken()">Copy Access Token</button>
+    </div>
+
+    <script>
+        function getAccessToken() {
+            const hash = window.location.hash;
+            const params = new URLSearchParams(hash.substring(1));
+            return params.get('access_token');
+        }
+
+        function copyToken() {
+            const tokenField = document.getElementById('accessToken');
+            tokenField.select();
+            document.execCommand('copy');
+            alert('Access token copied to clipboard');
+        }
+
+        window.onload = function() {
+            const token = getAccessToken();
+            if (token) {
+                document.getElementById('accessToken').value = token;
+            } else {
+                alert('No access token found in the URL');
+            }
+        }
+    </script>
 </body>
 </html>

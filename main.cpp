@@ -11,6 +11,7 @@
 #include <chatmsgmodel.h>
 #include <chatmsgdatasource.h>
 #include <chatbotwebserver.h>
+#include <userconf.h>
 
 void messageHander(QtMsgType type, const QMessageLogContext& context, const QString& message) {
     QString levelText;
@@ -48,6 +49,10 @@ int main(int argc, char *argv[])
     /*
     Custom app startup
     */
+
+    QCoreApplication::setOrganizationName(ORGANIZATION);
+    QCoreApplication::setOrganizationDomain(ORGANIZATION);
+    QCoreApplication::setApplicationName(APP_NAME);
 
     // Chatbot chatbot;
     // engine.rootContext()->setContextProperty("chatbot", &chatbot);
